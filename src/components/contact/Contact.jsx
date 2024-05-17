@@ -6,9 +6,9 @@ import { BsWhatsapp } from "react-icons/bs";
 import { useRef } from 'react';
 import emailjs from 'emailjs-com';
 
-const Contact = () => {
+const Contact = ({ showToast }) => {
   const form = useRef();
-  
+
   const sendEmail = (e) => {
     e.preventDefault();
 
@@ -17,9 +17,11 @@ const Contact = () => {
       .then(
         () => {
           console.log('SUCCESS!');
+          showToast('Email sent successfully.');
         },
         (error) => {
           console.log('FAILED...', error.text);
+          showToast('Error sending email. Try again.');
         },
       );
 
