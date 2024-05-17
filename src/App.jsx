@@ -9,9 +9,11 @@ import Testimonials from './components/testimonials/Testimonials'
 import Contact from './components/contact/Contact'
 import Footer from './components/footer/Footer'
 import Modal from './components/ui/modal/Modal'
+import Toast from './components/ui/toast/Toast'
 
 const App = () => {
 
+  /* Modal */
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
   const [modalContent, setModalContent] = useState('');
@@ -31,6 +33,18 @@ const App = () => {
     setModalImage('');
   };
 
+  /* Toast */
+  const addToast = (message) => {
+    const id = Date.now();
+    setToasts([...toasts, { id, message }]);
+
+    setTimeout(() => {
+      setToasts((currentToasts) => currentToasts.filter((toast) => toast.id !== id));
+    }, 3000);
+  };
+
+  const [toasts, setToasts] = useState([]);
+
   return (
     <>
        <Modal
@@ -47,7 +61,12 @@ const App = () => {
       <Services/>
       <Portfolio openModal={openModal}/>
       <Testimonials/>
-      <Contact/>
+      <Contact showToast={addToast} />
+      <div id="toast-container">
+        {toasts.map((toast) => (
+          <Toast key={toast.id} message={toast.message} onClose={() => setToasts(toasts.filter((t) => t.id !== toast.id))} />
+        ))}
+      </div>
       <Footer/>
     </>
   )
