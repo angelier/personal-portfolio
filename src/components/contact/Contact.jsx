@@ -1,16 +1,18 @@
-import React from 'react'
+import React , { useRef, useState } from 'react'
 import './contact.css'
 import { MdOutlineEmail } from "react-icons/md";
 import { RiMessengerLine } from "react-icons/ri";
 import { BsWhatsapp } from "react-icons/bs";
-import { useRef } from 'react';
 import emailjs from 'emailjs-com';
 
 const Contact = ({ showToast }) => {
   const form = useRef();
+  const [isLoading, setIsLoading] = useState(false);
 
   const sendEmail = (e) => {
     e.preventDefault();
+    
+    setIsLoading(true); // Se establece isLoading en true cuando se inicia el envío del correo electrónico
 
     emailjs
       .sendForm('service_mgowhae', 'template_qg57y8l', form.current, 'ScBgEQc8tszuCb0VY')
@@ -23,7 +25,9 @@ const Contact = ({ showToast }) => {
           console.log('FAILED...', error.text);
           showToast('Error sending email. Try again.');
         },
-      );
+      ).finally(() => {
+        setIsLoading(false); // Se establece isLoading en false cuando se completa el envío del correo electrónico, ya sea exitoso o fallido
+      });
 
     e.target.reset();
     
@@ -60,7 +64,9 @@ const Contact = ({ showToast }) => {
           <input type="text" name="name" placeholder="Your Full Name" required />
           <input type="email" name="email" placeholder="Your Email" required />
           <textarea name="message" cols="30" rows="7" placeholder="Your Message" required ></textarea>
-          <button type="submit" className="btn btn-primary">Send Message</button>
+          <button type="submit" className="btn btn-primary" disabled={isLoading}>
+            {isLoading ? 'Sending...' : 'Send Message'}
+          </button>
         </form>
       </div>
     </section>
